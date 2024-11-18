@@ -32,7 +32,7 @@ def convert_to_17x11():
         file.save(input_path)
 
         # Convert PDF to 17x11 layout
-        pages = convert_from_path(input_path, dpi=300)
+        pages = convert_from_path(input_path, dpi=150)
         c = canvas.Canvas(output_path, pagesize=(1224, 792))  # Landscape: 17x11 inches
         positions = [(36, 36), (612 + 36, 36)]  # Left and right sides
 
