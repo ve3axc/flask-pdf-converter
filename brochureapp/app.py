@@ -30,6 +30,7 @@ def convert_to_17x11():
 
         # Save the uploaded file
         file.save(input_path)
+        print(f"Uploaded file saved at: {input_path}")  # Log the saved file path
 
         # Convert PDF to 17x11 layout
         pages = convert_from_path(input_path, dpi=300)
@@ -47,9 +48,8 @@ def convert_to_17x11():
             c.showPage()
         c.save()
 
+        print(f"Converted PDF saved at: {output_path}")  # Log the output file path
         return send_file(output_path, as_attachment=True)
 
 if __name__ == '__main__':
-    # Bind to the correct host and port for Render
-    port = int(os.environ.get('PORT', 5000))  # Use PORT environment variable or default to 5000
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True, host='0.0.0.0')
