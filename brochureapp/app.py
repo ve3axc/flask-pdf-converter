@@ -44,7 +44,7 @@ def convert_to_17x11():
 
         # Convert PDF to images
         try:
-            pages = convert_from_path(input_path, dpi=300)
+            pages = convert_from_path(input_path, dpi=100)
         except Exception as e:
             app.logger.error(f"Error converting PDF to images: {e}")
             return f"Error processing file: {e}", 500
