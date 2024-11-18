@@ -31,25 +31,32 @@ def convert_to_17x11():
         # Save the uploaded file
         file.save(input_path)
 
-        # Convert PDF to 17x11 layout
-        pages = convert_from_path(input_path, dpi=150)
-        c = canvas.Canvas(output_path, pagesize=(1224, 792))  # Landscape: 17x11 inches
-        positions = [(36, 36), (612 + 36, 36)]  # Left and right sides
+        # Convert PDF to images
+        pages = convert_from_path(input_path, dpi=200)
+
+        # Create the output PDF with 17x11 pages
+        c = canvas.Canvas(output_path, pagesize=(1224, 792))  # 17x11 in points (landscape)
 
         for i in range(0, len(pages), 2):
-            for j in range(2):  # Process two pages per 17x11 sheet
-                if i + j < len(pages):
-                    page_image = pages[i + j]
-                    x, y = positions[j]
-                    temp_image_path = f"/tmp/page_{i + j}.png"
-                    page_image.save(temp_image_path, "PNG")
-                    c.drawImage(temp_image_path, x, y, width=576, height=756)
-            c.showPage()
-        c.save()
+            if i < len(pages):
+                # First page on the left (8.5x11)
+                left_image = pages[i]
+                left_temp_path = f"/tmp/left_page_{i}.png"
+                left_image.save(left_temp_path, "PNG")
+                c.drawImage(left_temp_path, 0, 0, width=612, height=792)  # No padding
 
+            if i + 1 < len(pages):
+                # Second page on the right (8.5x11)
+                right_image = pages[i + 1]
+                right_temp_path = f"/tmp/right_page_{i + 1}.png"
+                right_image.save(right_temp_path, "PNG")
+                c.drawImage(right_temp_path, 612, 0, width=612, height=792)  # No padding
+
+            c.showPage()
+
+        c.save()
         return send_file(output_path, as_attachment=True)
 
-# This is the part you need to add
 if __name__ == '__main__':
     import os
     port = int(os.environ.get('PORT', 5000))  # Use PORT env variable or default to 5000
